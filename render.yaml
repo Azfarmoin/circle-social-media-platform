@@ -1,0 +1,23 @@
+# Render Blueprint: one click deploy. Render > New > Blueprint > pick this repository.
+# You only have to paste MONGO_URI (your MongoDB Atlas connection string) when asked.
+services:
+  - type: web
+    name: circle
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false          # you are prompted for this: your Atlas connection string, with /circle as the database
+      - key: JWT_ACCESS_SECRET
+        generateValue: true  # Render creates a strong random secret for you
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: AUTO_SEED
+        value: "true"       # fills an EMPTY database with demo people and posts on first start; set to false for a real site
+      - key: UPLOAD_DIR
+        value: /tmp/uploads  # free plans have no persistent disk: uploads vanish on restart (see docs/DEPLOY.md)

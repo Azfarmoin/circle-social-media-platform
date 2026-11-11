@@ -1,0 +1,41 @@
+# Circle on Netlify
+# - the React client is served from the CDN (client/dist)
+# - the Express API runs as a Netlify Function (server/netlify/functions/api.js)
+# - uploads live in Netlify Blobs (serverless hosts have no filesystem)
+# Realtime (Socket.IO) is off in this deployment: functions cannot hold WebSocket
+# connections, so the client is built with VITE_REALTIME=false.
+# Required environment variables (set in the Netlify UI): MONGO_URI, JWT_ACCESS_SECRET.
+
+[build]
+  command = "npm run build --prefix client"
+  publish = "client/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "server/netlify/functions"
+  node_bundler = "esbuild"
+  # Native or dynamically-loaded packages are kept outside the bundle; the platform
+  # includes them from server/node_modules (sharp ships platform binaries this way).
+  external_node_modules = ["express", "mongoose", "sharp", "ioredis", "pino", "pino-http", "nodemailer", "@netlify/blobs"]
+
+# The Express app mounts its routes at /api and serves uploads at /uploads; the rewrites
+# keep those paths same-origin so cookies and CSP stay intact.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/uploads/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# SPA fallback: every client-side route renders index.html from the CDN.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

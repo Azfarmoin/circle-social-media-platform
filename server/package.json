@@ -1,0 +1,45 @@
+{
+  "name": "circle-server",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/seeds/seed.js",
+    "db:check": "node scripts/check-db.js",
+    "blobs:seed": "node scripts/push-seed-blobs.mjs",
+    "test": "node --test --test-concurrency=1 --test-timeout=60000 \"tests/**/*.test.js\""
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.9",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.0",
+    "multer": "^2.0.0",
+    "nodemailer": "^10.1.1",
+    "pino": "^9.3.2",
+    "pino-http": "^10.2.0",
+    "serverless-http": "^4.0.0",
+    "sharp": "^0.35.5",
+    "socket.io": "^4.7.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}

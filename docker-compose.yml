@@ -1,0 +1,38 @@
+# Run the whole site with one command:   docker compose up --build        then open http://localhost:8080
+# Using MongoDB Atlas instead of the bundled database? Put MONGO_URI=... in a file named .env next to this one
+# (see .env.example) and run:  docker compose up --build app
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports: ["8080:5000"]
+    environment:
+      NODE_ENV: production
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/circle}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:8080}
+      TRUST_PROXY: "true"
+      # Set your own secret for anything beyond a local trial:  openssl rand -hex 48
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-local-trial-secret-change-me-before-sharing-this-site-with-anyone}
+      # false = plain http://localhost works. Set true once the site is served over https.
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      # Verification emails need a mail server; without SMTP_URL accounts are active immediately.
+      SMTP_URL: ${SMTP_URL:-}
+      # Fills an empty database with demo people and posts on first start (demo@circle.test / Password123!). Set false for a real site.
+      AUTO_SEED: ${AUTO_SEED:-true}
+    volumes: [uploads:/data/uploads]
+    depends_on:
+      mongo: { condition: service_healthy, required: false }
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [mongo-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mongo-data:
+  uploads:

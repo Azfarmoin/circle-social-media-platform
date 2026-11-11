@@ -1,0 +1,24 @@
+{
+  "name": "circle-social-platform",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Circle: a full-stack social network (React, Redux Toolkit, Tailwind, Node, Express, MongoDB, Socket.IO).",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "seed": "npm run seed --prefix server --",
+    "blobs:seed": "npm run blobs:seed --prefix server",
+    "test": "npm test --prefix server && npm test --prefix client",
+    "e2e": "npm run e2e --prefix client",
+    "docker:up": "docker compose up --build",
+    "setup": "node scripts/setup.mjs",
+    "build:all": "npm ci --prefix client && npm ci --prefix server --omit=dev && npm run build --prefix client",
+    "start": "node server/src/server.js",
+    "db:check": "npm run db:check --prefix server"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
